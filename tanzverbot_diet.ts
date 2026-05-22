@@ -18,6 +18,8 @@ const foodNames: string[] = [
 const foodCalories: number[] = [137, 64, 271, 40, 297, 125, 482, 835, 37, 59];
 const foodServings: number[] = [4, 8, 4, 12, 1, 6, 2, 2, 25, 20];
 
+// TODO: Grosse Funktion in kleinere umwandeln.
+// TODO: Weniger Parameter
 export function calcDateOnDiet(
   currentWeightKg: number,
   targetWeightKg: number,
@@ -50,10 +52,11 @@ export function calcDateOnDiet(
       655.1 + 9.563 * currentWeightKg + 1.85 * heightM * 100.0 - 4.676 * ageY,
     );
   }
-  const dailyExcessCalories =
-    dailyCaloriesOnDiet - dailyCaloriesBasicMetabolicRate;
+  const dailyExcessCalories = dailyCaloriesOnDiet -
+    dailyCaloriesBasicMetabolicRate;
   if (dailyExcessCalories <= 0) {
     throw new Error("This diet is not sufficient for you to gain weight.");
   }
+  //TODO: Magic Variable
   return Math.ceil((9000 * weightGainKg) / dailyExcessCalories);
 }
