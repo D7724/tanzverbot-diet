@@ -14,21 +14,19 @@ const foodNames: string[] = [
 ];
 const foodCalories: number[] = [137, 64, 271, 40, 297, 125, 482, 835, 37, 59];
 const foodServings: number[] = [4, 8, 4, 12, 1, 6, 2, 2, 25, 20];
+const CALORIES_PER_KG = 9000;
 
-// TODO: Grosse Funktion in kleinere umwandeln.
 export function calcDateOnDiet(person: Person): number {
-  if (validationPerson(person)) {
-    const weightGainKg = person.toWeight - person.fromWeight;
-    const dailyCaloriesOnDiet = calculateDailyCaloriesOnDiet();
-    const dailyCaloriesBasicMetabolicRate = calculateMetabolicRate(person);
-    const dailyExcessCalories = dailyCaloriesOnDiet -
-      dailyCaloriesBasicMetabolicRate;
-    if (dailyExcessCalories <= 0) {
-      throw new Error("This diet is not sufficient for you to gain weight.");
-    }
-    return Math.ceil((9000 * weightGainKg) / dailyExcessCalories);
+  validationPerson(person);
+  const weightGainKg = person.toWeight - person.fromWeight;
+  const dailyCaloriesOnDiet = calculateDailyCaloriesOnDiet();
+  const dailyCaloriesBasicMetabolicRate = calculateMetabolicRate(person);
+  const dailyExcessCalories = dailyCaloriesOnDiet -
+    dailyCaloriesBasicMetabolicRate;
+  if (dailyExcessCalories <= 0) {
+    throw new Error("This diet is not sufficient for you to gain weight.");
   }
-  throw new Error(`Wrong Input`);
+  return Math.ceil((CALORIES_PER_KG * weightGainKg) / dailyExcessCalories);
 }
 
 function validationPerson(person: Person) {
@@ -38,7 +36,6 @@ function validationPerson(person: Person) {
   if (person.age < 16 || person.height < 1.5) {
     throw new Error(`You do not qualify for this kind of diet.`);
   }
-  return true;
 }
 
 function calculateDailyCaloriesOnDiet() {
@@ -53,16 +50,24 @@ function calculateDailyCaloriesOnDiet() {
 
 function calculateMetabolicRate(person: Person) {
   if (person.sex == Sex.Male) {
-    return Math.ceil(
-      // Harris-Benedict-Formula (Male)
-      66.47 + 13.7 * person.fromWeight + 5.003 * person.height * 100.0 -
-        6.75 * person.age,
-    );
+    return calculateMaleMetabolicRate(person);
   } else {
-    return Math.ceil(
-      // Harris-Benedict-Formula (Female)
-      655.1 + 9.563 * person.fromWeight + 1.85 * person.height * 100.0 -
-        4.676 * person.age,
-    );
+    return calculateFemaleMetabolicRate(person);
   }
+}
+
+function calculateMaleMetabolicRate(person: Person) {
+  return Math.ceil(
+    // Harris-Benedict-Formula (Male)
+    66.47 + 13.7 * person.fromWeight + 5.003 * person.height * 100.0 -
+      6.75 * person.age,
+  );
+}
+
+function calculateFemaleMetabolicRate(person: Person) {
+  return Math.ceil(
+    // Harris-Benedict-Formula (Female)
+    655.1 + 9.563 * person.fromWeight + 1.85 * person.height * 100.0 -
+      4.676 * person.age,
+  );
 }
