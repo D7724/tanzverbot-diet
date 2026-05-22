@@ -1,10 +1,25 @@
 import { assertEquals, assertGreater } from "@std/assert";
-import { calcDateOnDiet, Sex } from "./tanzverbot_diet.ts";
+import { calcDateOnDiet } from "./tanzverbot_diet.ts";
+import { Person, Sex } from "./person.ts";
 
 Deno.test("Tanzverbot Diet", () => {
-  assertGreater(calcDateOnDiet(74, 100, 1.86, 38, Sex.Male), 0.0);
+  const person: Person = {
+    fromWeight: 74,
+    toWeight: 100,
+    height: 1.86,
+    age: 38,
+    sex: Sex.Male,
+  };
+  assertGreater(calcDateOnDiet(person), 0.0);
 });
 
 Deno.test("Tanzverbot Diet Female", () => {
-  assertEquals(calcDateOnDiet(74, 100, 1.86, 38, Sex.Female), 35);
+  const person: Person = {
+    fromWeight: 74,
+    toWeight: 100,
+    height: 1.86,
+    age: 38,
+    sex: Sex.Female,
+  };
+  assertEquals(calcDateOnDiet(person), 35);
 });
